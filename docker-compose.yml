@@ -1,0 +1,25 @@
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+       IDS_API_KEY: ${IDS_API_KEY:-my-strong-key}
+    volumes:
+      - ./data:/data
+
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    environment:
+       DASHBOARD_API_URL: ${DASHBOARD_API_URL:-http://api:8000}
+       DASHBOARD_API_KEY: ${DASHBOARD_API_KEY:-my-strong-key}
+    depends_on:
+      - api
+    volumes:
+      - ./data:/data:ro

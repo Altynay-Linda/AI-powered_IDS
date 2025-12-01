@@ -1,0 +1,4 @@
+/.env
+/data/logs/
+/data/ids_metrics_log.jsonl
+.idea
