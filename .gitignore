@@ -1,4 +1,6 @@
 /.env
-/data/logs/
+.venv
+/data/logs/*.log
 /data/ids_metrics_log.jsonl
 .idea
+/data/zeek_logs/*.log

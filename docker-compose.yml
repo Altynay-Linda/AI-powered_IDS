@@ -6,7 +6,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-       IDS_API_KEY: ${IDS_API_KEY:-my-strong-key}
+       IDS_API_KEY: "my-strong-key"
     volumes:
       - ./data:/data
 
@@ -17,9 +17,31 @@ services:
     ports:
       - "8501:8501"
     environment:
-       DASHBOARD_API_URL: ${DASHBOARD_API_URL:-http://api:8000}
-       DASHBOARD_API_KEY: ${DASHBOARD_API_KEY:-my-strong-key}
+       DASHBOARD_API_URL: "http://api:8000"
+       DASHBOARD_API_KEY: "my-strong-key"
     depends_on:
       - api
     volumes:
       - ./data:/data:ro
+  zeek:
+    image: zeek/zeek:lts
+    container_name: zeek_sniffer
+    network_mode: "host"
+    volumes:
+      - ./data/zeek_logs/conn.log:/conn.log
+    command: zeek -i eth0
+    cap_add:
+      - NET_ADMIN
+  zeek_to_api:
+    build:
+      context: ./zeek_to_api
+      dockerfile: Dockerfile
+    environment:
+      IDS_API: "http://api:8000/predict_batch"
+      IDS_API_KEY: "my-strong-key"
+    depends_on:
+      - api
+      - zeek
+    volumes:
+      - ./data/zeek_logs:/logs
+
