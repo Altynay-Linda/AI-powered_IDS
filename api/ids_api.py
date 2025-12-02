@@ -347,7 +347,7 @@ def health() -> Dict[str, Any]:
 def get_threshold() -> Dict[str, float]:
     return {"threshold": _threshold}
 
-@app.put("/threshold", dependencies=[Depends(require_api_key)])
+@app.post("/threshold", dependencies=[Depends(require_api_key)])
 def set_threshold(req: ThresholdRequest) -> Dict[str, float]:
     global _threshold
     _threshold = float(req.threshold)
